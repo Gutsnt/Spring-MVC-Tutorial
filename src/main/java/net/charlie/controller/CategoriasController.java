@@ -1,30 +1,54 @@
 package net.charlie.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import net.charlie.model.Categoria;
+import net.charlie.service.ICategoriasService;
 
 @Controller
 @RequestMapping("/categorias")
 public class CategoriasController {
-	// @GetMapping("/index")
-	@RequestMapping(value="/index", method=RequestMethod.GET)
-	public String mostrarIndex(Model model) {
-	return "categorias/listCategorias";
+	
+	@Autowired
+	private ICategoriasService serviceCategoria;	
+	
+	 @GetMapping("/index")
+	public String listCategorias(Model model) {	 
+		 	List<Categoria> lista = serviceCategoria.buscarTodas();
+			model.addAttribute("categorias", lista);
+			return "categorias/listCategorias";
 	}
-	// @GetMapping("/create")
-	@RequestMapping(value="/create", method=RequestMethod.GET)
-	public String crear() {
-	return "categorias/formCategoria";
+	 
+	 
+	 @GetMapping("/create")	
+	public String crear(Categoria categoria) { 
+		 	return "categorias/formCategoria";
 	}
-	// @PostMapping("/save")
-	@RequestMapping(value="/save", method=RequestMethod.POST)
-	public String guardar(@RequestParam("nombre")String nombre,@RequestParam("descripcion") String descripcion) {
-	System.out.println("Categoria"+ nombre);
-	System.out.println("Descripcion" + descripcion);
-		return "categorias/listCategorias";
+	
+	 
+	 @PostMapping("/save")
+	public String guardar(Categoria categoria, BindingResult result, RedirectAttributes attributes) {
+		 if (result.hasErrors()) {
+				for (ObjectError error: result.getAllErrors()){
+					System.out.println("Ocurrio un error: " + error.getDefaultMessage());
+					}
+				return "categorias/formVacante";
+				}
+		 
+		 serviceCategoria.guardar(categoria);
+		 attributes.addFlashAttribute("msg", "Los datos de la categoría fueron guardados!");
+		System.out.print("Categoria " + categoria);
+		return "redirect:/categorias/index";
 	}
 	
 }

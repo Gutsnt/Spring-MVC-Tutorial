@@ -52,7 +52,7 @@ public class VacantesController {
 			
 			serviceVacantes.guardar(vacante);
 			attributes.addFlashAttribute("msg", "Registro Guardado");
-			System.out.print("Vacamte" + vacante);
+			System.out.print("Vacante " + vacante);
 			return "redirect:/vacantes/index";
 		}
 		/*
