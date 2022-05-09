@@ -17,11 +17,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.charlie.model.Vacante;
 import net.charlie.service.ICategoriasService;
 import net.charlie.service.IVacantesService;
+import net.charlie.util.Utileria;
 
 @Controller
 @RequestMapping("/vacantes")
@@ -46,13 +48,22 @@ public class VacantesController {
 		}
 		
 		@PostMapping("/save")
-		public String guardar (Vacante vacante, BindingResult result, RedirectAttributes attributes) {
+		public String guardar (Vacante vacante, BindingResult result, RedirectAttributes attributes,
+				@RequestParam("archivoImagen") MultipartFile multiPart) {
 			
 			if (result.hasErrors()) {
 				for (ObjectError error: result.getAllErrors()){
 					System.out.println("Ocurrio un error: " + error.getDefaultMessage());
 					}
 				return "vacantes/formVacante";
+				}
+			if (!multiPart.isEmpty()) {
+				String ruta = "/home/preacher/empleos/img-vacantes/"; // Linux/MAC
+				String nombreImagen = Utileria.guardarArchivo(multiPart, ruta);
+					if (nombreImagen != null){ // La imagen si se subio
+						// Procesamos la variable nombreImagen
+						vacante.setImage(nombreImagen);
+				}
 				}
 			
 			serviceVacantes.guardar(vacante);
