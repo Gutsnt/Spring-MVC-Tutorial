@@ -13,6 +13,7 @@ public class Vacante {
 	private String image = "no-image.png";
 	private String detalles;
 	private String estatus;
+	private Categoria categoria;
 	
 	
 	public Integer getId() {
@@ -71,12 +72,21 @@ public class Vacante {
 	public void setEstatus(String estatus) {
 		this.estatus = estatus;
 	}
+	
+	public Categoria getCategoria() {
+		return categoria;
+	}
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
 	@Override
 	public String toString() {
 		return "Vacante [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", fecha=" + fecha
 				+ ", salario=" + salario + ", destacada=" + destacada + ", image=" + image + ", detalles=" + detalles
-				+ ", estatus=" + estatus + "]";
+				+ ", estatus=" + estatus + ", categoria=" + categoria + "]";
 	}
+	
+	
 	
 	
 	

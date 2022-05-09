@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.charlie.model.Vacante;
+import net.charlie.service.ICategoriasService;
 import net.charlie.service.IVacantesService;
 
 @Controller
@@ -27,6 +28,9 @@ import net.charlie.service.IVacantesService;
 public class VacantesController {
 	@Autowired
 	private IVacantesService serviceVacantes;	
+	
+	@Autowired
+	private ICategoriasService serviceCategorias;
 	
 		@GetMapping("/index")
 		public String listVacantes(Model model) {
@@ -36,7 +40,8 @@ public class VacantesController {
 		}
 	
 		@GetMapping("/create")
-		public String crear(Vacante vacante) {
+		public String crear(Vacante vacante, Model model) {
+			model.addAttribute("categorias", serviceCategorias.buscarTodas());	
 			return "vacantes/formVacante";
 		}
 		
