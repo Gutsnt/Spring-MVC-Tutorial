@@ -65,7 +65,8 @@ public class VacantesServiceImpl implements IVacantesService {
 			} catch (ParseException e) {
 				System.out.print("Error: " + e.getMessage());
 			}
-	}
+	 }
+	
 
 	@Override
 	public List<Vacante> buscarTodas() {

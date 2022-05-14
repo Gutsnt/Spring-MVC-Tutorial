@@ -2,17 +2,33 @@ package net.charlie.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity 
+@Table(name="Vacantes")
 public class Vacante {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	private String nombre;
 	private String descripcion;
 	private Date fecha;
 	private Double salario;
-	private Integer destacada;
-	private String image = "no-image.png";
+	private Integer destacado;
+	private String imagen = "no-image.png";
 	private String detalles;
 	private String estatus;
+	//@Transient //ignorar atributo
+	@OneToOne
+	@JoinColumn(name="idCategoria")
 	private Categoria categoria;
 	
 	
@@ -48,17 +64,17 @@ public class Vacante {
 	}
 	
 	public Integer getDestacada() {
-		return destacada;
+		return destacado;
 	}
 	public void setDestacada(Integer destacada) {
-		this.destacada = destacada;
+		this.destacado = destacada;
 	}
 	
 	public String getImage() {
-		return image;
+		return imagen;
 	}
 	public void setImage(String image) {
-		this.image = image;
+		this.imagen = image;
 	}
 	public String getDetalles() {
 		return detalles;
@@ -82,7 +98,7 @@ public class Vacante {
 	@Override
 	public String toString() {
 		return "Vacante [id=" + id + ", nombre=" + nombre + ", descripcion=" + descripcion + ", fecha=" + fecha
-				+ ", salario=" + salario + ", destacada=" + destacada + ", image=" + image + ", detalles=" + detalles
+				+ ", salario=" + salario + ", destacada=" + destacado + ", image=" + imagen + ", detalles=" + detalles
 				+ ", estatus=" + estatus + ", categoria=" + categoria + "]";
 	}
 	
