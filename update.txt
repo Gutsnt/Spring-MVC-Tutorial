@@ -1,4 +1,2 @@
-update
-120
-eliminar vacante
+
 
