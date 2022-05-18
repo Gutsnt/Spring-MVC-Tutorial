@@ -9,11 +9,14 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.charlie.model.Categoria;
+import net.charlie.model.Vacante;
 import net.charlie.service.ICategoriasService;
 
 @Controller
@@ -52,5 +55,19 @@ public class CategoriasController {
 		System.out.print("Categoria " + categoria);
 		return "redirect:/categorias/index";
 	}
+	 @GetMapping("/edit/{id}")
+		public String editar(@PathVariable("id") int idCategoria, Model model ) {
+			Categoria categoria = serviceCategoria.buscarPorId(idCategoria);
+			model.addAttribute("categoria", categoria);
+			return"categorias/formCategoria";
+			
+		}
+	 
+	 @GetMapping("/delete/{id}")
+		public String eliminar(@PathVariable("id") int idCategoria, RedirectAttributes attributes) {
+			serviceCategoria.eliminarCategoria(idCategoria);
+			attributes.addFlashAttribute("msg", "La vacante fue eliminada!");
+			return "redirect:/categorias/index";
+	 }
 	
 }

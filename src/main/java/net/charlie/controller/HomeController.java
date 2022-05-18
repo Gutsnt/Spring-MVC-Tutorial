@@ -9,8 +9,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import net.charlie.model.Perfil;
+import net.charlie.model.Usuario;
 import net.charlie.model.Vacante;
+import net.charlie.service.IUsuariosService;
 import net.charlie.service.IVacantesService;
 
 @Controller
@@ -18,6 +23,8 @@ public class HomeController {
 	
 	@Autowired
 	private IVacantesService serviceVacantes;
+	@Autowired
+	private IUsuariosService serviceUsuarios;
 	@GetMapping("/tabla")
 	public String mostrarTabla(Model model) {
 		List<Vacante> lista = serviceVacantes.buscarTodas();
@@ -59,4 +66,23 @@ public class HomeController {
 		model.addAttribute("vacantes", serviceVacantes.buscarDestacada());
 	}
 	
+	@GetMapping("/signup")
+	public String registrarse(Usuario usuario) {
+		return"formRegistro";
+		
+	}
+	
+	@PostMapping("/signup")
+	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
+		usuario.setEstatus(1);
+		usuario.setFechaRegistro(new Date());
+		
+		Perfil perfil = new Perfil();
+		perfil.setId(3);
+		usuario.agregar(perfil);
+		
+		serviceUsuarios.guardar(usuario);
+		attributes.addFlashAttribute("msg", "El registro fue guardado correctamente!");
+		return "redirect:/usuarios/index";
+	}
 }

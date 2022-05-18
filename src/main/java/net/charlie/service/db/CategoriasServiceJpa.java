@@ -38,4 +38,10 @@ public class CategoriasServiceJpa implements ICategoriasService {
 		return null;
 	}
 
+	@Override
+	public void eliminarCategoria(Integer idCategoria) {
+		categoriasRepo.deleteById(idCategoria);
+		
+	}
+
 }
