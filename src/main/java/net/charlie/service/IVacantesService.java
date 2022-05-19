@@ -1,6 +1,9 @@
 package net.charlie.service;
 
 import java.util.List;
+
+import org.springframework.data.domain.Example;
+
 import net.charlie.model.Vacante;
 
 public interface IVacantesService {
@@ -9,5 +12,6 @@ public interface IVacantesService {
 	void guardar (Vacante vacante);
 	List<Vacante> buscarDestacada();
 	void eliminar(int idVacante);
+	List <Vacante> buscarByExample(Example<Vacante> example);
 
 }
