@@ -15,12 +15,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import net.charlie.model.Perfil;
 import net.charlie.model.Usuario;
 import net.charlie.model.Vacante;
+import net.charlie.service.ICategoriasService;
 import net.charlie.service.IUsuariosService;
 import net.charlie.service.IVacantesService;
 
 @Controller
 public class HomeController {
 	
+	@Autowired
+	private ICategoriasService serviceCategorias;
 	@Autowired
 	private IVacantesService serviceVacantes;
 	@Autowired
@@ -61,9 +64,19 @@ public class HomeController {
 		return "home"; 
 	}
 	
+	@GetMapping("/search")
+	public String buscar(@ModelAttribute("search") Vacante vacante) {
+		System.out.println("Buscando por : " + vacante);
+		return "home";
+	}
+	
 	@ModelAttribute
 	public void setGenericos(Model model) {
+		Vacante vacanteSearch = new Vacante();
+		vacanteSearch.reset();
 		model.addAttribute("vacantes", serviceVacantes.buscarDestacada());
+		model.addAttribute("categorias", serviceCategorias.buscarTodas());
+		model.addAttribute("search", vacanteSearch);
 	}
 	
 	@GetMapping("/signup")
