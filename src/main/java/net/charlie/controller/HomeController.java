@@ -4,17 +4,26 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import net.charlie.model.Perfil;
@@ -28,11 +37,17 @@ import net.charlie.service.IVacantesService;
 public class HomeController {
 	
 	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	@Autowired
 	private ICategoriasService serviceCategorias;
+	
 	@Autowired
 	private IVacantesService serviceVacantes;
+	
 	@Autowired
 	private IUsuariosService serviceUsuarios;
+	
 	@GetMapping("/tabla")
 	public String mostrarTabla(Model model) {
 		List<Vacante> lista = serviceVacantes.buscarTodas();
@@ -64,9 +79,40 @@ public class HomeController {
 		
 		return "listado";
 	}
+	
+	@GetMapping("/login" )
+	public String mostrarLogin() {
+	return "formLogin";
+	}
+	
+	@GetMapping("/bcrypt/{texto}")
+	@ResponseBody
+	public String encriptar(@PathVariable("texto") String texto) {
+		return texto + " Enctriptado en Bcrypt es: " + passwordEncoder.encode(texto);
+	}
 	@GetMapping("/")
 	public String mostrarHome(Model model) {
 		return "home"; 
+	}
+	
+	@GetMapping("/index")
+	public String mostrarIndex(Authentication auth, HttpSession session) {
+		String username = auth.getName();
+		System.out.println(username);
+		
+		
+		for(GrantedAuthority rol: auth.getAuthorities()) {
+			System.out.println("Rol: " + rol.getAuthority());
+		}
+		
+		if(session.getAttribute("username") == null) {
+			Usuario usuario = serviceUsuarios.buscarPorUsername(username);
+			usuario.setPassword(null);
+			session.setAttribute("username", usuario);
+			System.out.println("El usuario es :" + usuario);
+		}
+		
+		return"redirect:/";
 	}
 	
 	@GetMapping("/search")
@@ -82,6 +128,15 @@ public class HomeController {
 		model.addAttribute("vacantes",lista);
 		return "home";
 	}
+	
+	@GetMapping("/logout")
+	public String logout(HttpServletRequest request){
+	SecurityContextLogoutHandler logoutHandler =
+		new SecurityContextLogoutHandler();
+		logoutHandler.logout(request, null, null);
+	return "redirect:/";
+	}
+	
 	//Si lo detecta vacio en el Data Binder, los vuelve null
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -105,6 +160,10 @@ public class HomeController {
 	
 	@PostMapping("/signup")
 	public String guardarRegistro(Usuario usuario, RedirectAttributes attributes) {
+		String pwdPlano = usuario.getPassword();
+		String pwdEncriptado = passwordEncoder.encode(pwdPlano);
+		usuario.setPassword(pwdEncriptado);
+		
 		usuario.setEstatus(1);
 		usuario.setFechaRegistro(new Date());
 		
