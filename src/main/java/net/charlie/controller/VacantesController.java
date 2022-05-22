@@ -78,7 +78,7 @@ public class VacantesController {
 						// Procesamos la variable nombreImagen
 						vacante.setImage(nombreImagen);
 				}
-				}
+			}
 			
 			serviceVacantes.guardar(vacante);
 			attributes.addFlashAttribute("msg", "Registro Guardado");

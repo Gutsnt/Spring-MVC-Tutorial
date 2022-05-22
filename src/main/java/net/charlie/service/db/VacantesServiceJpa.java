@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties.Pageable;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,7 @@ public class VacantesServiceJpa implements IVacantesService {
 	
 	@Autowired
 	private VacantesRepository vacantesRepo;
+	
 	@Override
 	public List<Vacante> buscarTodas() {
 		return vacantesRepo.findAll();
