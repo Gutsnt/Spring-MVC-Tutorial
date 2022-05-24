@@ -115,6 +115,11 @@ public class HomeController {
 		return"redirect:/";
 	}
 	
+	@GetMapping("/about")
+	public String acerca() {
+		return "acerca";
+	}
+	
 	@GetMapping("/search")
 	public String buscar(@ModelAttribute("search") Vacante vacante, Model model) {
 		System.out.println("Buscando por : " + vacante);
