@@ -14,5 +14,9 @@ public interface IUsuariosService {
 	
 	Usuario buscarPorUsername(String username);
 	
+	int bloquear(int idUsuario);
+	
+	int activar(int idUsuario);
+	
 
 }
